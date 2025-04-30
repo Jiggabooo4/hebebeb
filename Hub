@@ -266,3 +266,4 @@ local Toggle = MiscTab:CreateToggle({
    -- The variable (Value) is a boolean on whether the toggle is true or false
    end,
 })
+end
