@@ -1,0 +1,266 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+    local Window = Rayfield:CreateWindow({
+   Name = "The Reapers HUB",
+   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   LoadingTitle = "Welcome to hell...",
+   LoadingSubtitle = "by SATAN HIMSELF..",
+   Theme = "Amethyst", -- Check https://[Log in to view URL]
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "NotaUniversalHub"
+   },
+
+   Discord = {
+      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+
+   KeySystem = true, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Enter your key",
+      Subtitle = "Key System",
+      Note = "FIGURE IT OUT", -- Use this to tell the user how to get a key
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = true, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"https://pastebin.com/raw/s5uVmCLA"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+    
+    local MainTab = Window:CreateTab("HomePage", 4483362458) -- Title, Image
+    local MainSection = MainTab:CreateSection("Main")
+
+    Rayfield:Notify({
+   Title = "Executed!",
+   Content = "Have fun",
+   Duration = 6.5,
+   Image = nil,
+})
+
+local Button = MainTab:CreateButton({
+   Name = "Infinite Jump",
+   Callback = function()
+   local InfiniteJumpEnabled = true
+game:GetService("UserInputService").JumpRequest:connect(function()
+	if InfiniteJumpEnabled then
+		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
+	end
+end)
+   end,
+})
+
+local Slider = MainTab:CreateSlider({
+   Name = "WalkSpeed",
+   Range = {0, 300},
+   Increment = 5,
+   Suffix = "Speed",
+   CurrentValue = 16,
+   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = (Value)
+   end,
+})
+
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local flying = false
+local speed = 50
+local flyConnection
+
+local function fly(character, camera)
+    local HumanoidRootPart = character:WaitForChild("HumanoidRootPart")
+    
+    -- Create attachments if they don't exist
+    local rootAttachment = HumanoidRootPart:FindFirstChild("RootAttachment")
+    if not rootAttachment then
+        rootAttachment = Instance.new("Attachment")
+        rootAttachment.Name = "RootAttachment"
+        rootAttachment.Parent = HumanoidRootPart
+    end
+
+    local AlignOrientation = Instance.new("AlignOrientation")
+    AlignOrientation.Mode = Enum.OrientationAlignmentMode.OneAttachment
+    AlignOrientation.Attachment0 = rootAttachment
+    AlignOrientation.Responsiveness = 50
+    AlignOrientation.MaxTorque = 100000
+    AlignOrientation.Parent = HumanoidRootPart
+
+    local AlignPosition = Instance.new("AlignPosition")
+    AlignPosition.Mode = Enum.PositionAlignmentMode.OneAttachment
+    AlignPosition.Attachment0 = rootAttachment
+    AlignPosition.MaxForce = 100000
+    AlignPosition.Responsiveness = 50
+    AlignPosition.Parent = HumanoidRootPart
+
+    local animator = character:WaitForChild("Humanoid"):FindFirstChildOfClass("Animator")
+    local animation = Instance.new("Animation")
+    animation.AnimationId = "rbxassetid://15552580493"
+    local animationTrack = animator:LoadAnimation(animation)
+    animationTrack:Play()
+
+character:FindFirstChildOfClass("Humanoid").PlatformStand = true
+    flying = true
+
+    flyConnection = RunService.RenderStepped:Connect(function()
+        if flying then
+            local moveDirection = (camera.CFrame.LookVector).Unit
+            AlignPosition.Position = HumanoidRootPart.Position + moveDirection * speed
+            AlignOrientation.CFrame = CFrame.new(HumanoidRootPart.Position, HumanoidRootPart.Position + moveDirection)
+        end
+    end)
+end
+
+local function endFlying(character)
+    local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    if not HumanoidRootPart then return end
+
+    local alignPos = HumanoidRootPart:FindFirstChild("AlignPosition")
+    local alignOri = HumanoidRootPart:FindFirstChild("AlignOrientation")
+
+    if alignPos then alignPos:Destroy() end
+    if alignOri then alignOri:Destroy() end
+
+    if flyConnection then
+        flyConnection:Disconnect()
+        flyConnection = nil
+    end
+	
+character:FindFirstChildOfClass("Humanoid").PlatformStand = false
+    flying = false
+end
+
+local Toggle = MainTab:CreateToggle({
+    Name = "Fly",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local camera = workspace.CurrentCamera
+
+        UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if gameProcessed then return end
+            if input.KeyCode == Enum.KeyCode.M then
+                if not flying then
+                    fly(character, camera)
+                else
+                    endFlying(character)
+                end
+            end
+        end)
+    end
+})
+
+local Button = MainTab:CreateButton({
+   Name = "Beat Yo Meat",
+   Callback = function()
+   loadstring(game:HttpGet("https://pastefy.app/YZoglOyJ/raw"))()
+   end,
+})
+
+local Button = MainTab:CreateButton({
+   Name = "Systems Broken",
+   Callback = function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script"))()
+   end,
+})
+
+local Button = MainTab:CreateButton({
+   Name = "C Frame Speed",
+   Callback = function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/Jiggabooo4/hebebeb/refs/heads/main/speedy"))()
+   end,
+})
+
+local Button = MainTab:CreateButton({
+   Name = "Sex",
+   Callback = function()
+   loadstring(game:HttpGet("https://pastebin.com/raw/FWwdST5Y"))()
+   end,
+})
+
+local Button = MainTab:CreateButton({
+   Name = "Anti-VC Suspension",
+   Callback = function()
+   game:GetService("VoiceChatService"):joinVoice()
+   end,
+})
+
+local Button = MainTab:CreateButton({
+   Name = "Chat Bypasser",
+   Callback = function()
+   loadstring(game:HttpGet("https://github.com/Synergy-Networks/products/raw/main/BetterBypasser/loader.lua"))()
+   end,
+})
+
+local TeleportTab = Window:CreateTab("Teleport", 4483362458) -- Title, Image
+local TeleportSection = TeleportTab:CreateSection("Teleport")
+
+local Button = TeleportTab:CreateButton({
+   Name = "Booth1",
+   Callback = function()
+   local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+   rootPart.CFrame = game:GetService("Workspace").Booth.Booth01.BaseA.CFrame
+
+   end,
+})
+local Button = TeleportTab:CreateButton({
+   Name = "Booth2",
+   Callback = function()
+   local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+   rootPart.CFrame = game:GetService("Workspace").Booth.Booth02.BaseA.CFrame
+   end,
+})
+
+local Button = TeleportTab:CreateButton({
+   Name = "Booth3",
+   Callback = function()
+   local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+   rootPart.CFrame = game:GetService("Workspace").Booth.Booth03.BaseA.CFrame
+   end,
+})
+
+local Button = TeleportTab:CreateButton({
+   Name = "Booth4",
+   Callback = function()
+   local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+   rootPart.CFrame = game:GetService("Workspace").Booth.Booth04.BaseA.CFrame
+   end,
+})
+
+local Button = TeleportTab:CreateButton({
+   Name = "Booth5",
+   Callback = function()
+   local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+   rootPart.CFrame = game:GetService("Workspace").Booth.Booth05.BaseA.CFrame
+   end,
+})
+
+local Button = TeleportTab:CreateButton({
+   Name = "Donut Shop",
+   Callback = function()
+   local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+   rootPart.CFrame = game:GetService("Workspace").Donutshop.Donut.CFrame
+   end,
+})
+
+local MiscTab = Window:CreateTab("Misc", 4483362458) -- Title, Image
+local MiscSection = MiscTab:CreateSection("Misc Tab")
+
+local Toggle = MiscTab:CreateToggle({
+   Name = "Toggle Example",
+   CurrentValue = false,
+   Flag = "Toggle2", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   -- The function that takes place when the toggle is pressed
+   -- The variable (Value) is a boolean on whether the toggle is true or false
+   end,
+})
