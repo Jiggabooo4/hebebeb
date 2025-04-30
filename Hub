@@ -216,6 +216,46 @@ local Button = MainTab:CreateButton({
    loadstring(game:HttpGet("https://raw.githubusercontent.com/Jiggabooo4/hebebeb/refs/heads/main/IF"))()
    end,
 })
+
+local Toggle = MainTab:CreateToggle({
+   Name = "Spin Bot",
+   CurrentValue = false,
+   Flag = "Toggle8", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Settings
+local spinSpeed = 9999999 -- Degrees per second
+local spinning = false
+
+-- Function to toggle spinning
+local function toggleSpin()
+	spinning = not spinning
+end
+
+-- Bind toggle to the "T" key
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if not gameProcessed and input.KeyCode == Enum.KeyCode.T then
+		toggleSpin()
+	end
+end)
+
+-- Rotation logic
+RunService.RenderStepped:Connect(function(dt)
+	if spinning and rootPart then
+		local angle = spinSpeed * dt
+		rootPart.CFrame = rootPart.CFrame * CFrame.Angles(0, math.rad(angle), 0)
+	end
+end)
+
+   end,
+})
     
 local TeleportTab = Window:CreateTab("Teleport", 4483362458) -- Title, Image
 local TeleportSection = TeleportTab:CreateSection("Teleport")
