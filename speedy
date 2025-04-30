@@ -23,7 +23,7 @@ rs:NewButton("CFrame Guns FIX", "ButtonInfo", function()
         end)
     end)
 end)
-rs:NewButton("CFrame Speed (X)", "ButtonInfo", function()
+rs:NewButton("CFrame Speed (LeftAlt)", "ButtonInfo", function()
         repeat
         wait()
     until game:IsLoaded()
@@ -58,7 +58,7 @@ rs:NewButton("CFrame Speed (X)", "ButtonInfo", function()
                 print(Multiplier)
             end
         end
-        if L_140_arg0.KeyCode == Enum.KeyCode.X then
+        if L_140_arg0.KeyCode == Enum.KeyCode.LeftAlt then
             L_138_ = not L_138_
             if L_138_ == true then
                 repeat
