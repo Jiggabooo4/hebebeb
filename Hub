@@ -209,6 +209,13 @@ local Button = MainTab:CreateButton({
    loadstring(game:HttpGet("https://raw.githubusercontent.com/Jiggabooo4/hebebeb/refs/heads/main/flip"))()
    end,
 })
+
+local Button = MainTab:CreateButton({
+   Name = "Infinite Yield",
+   Callback = function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/Jiggabooo4/hebebeb/refs/heads/main/IF"))()
+   end,
+})
     
 local TeleportTab = Window:CreateTab("Teleport", 4483362458) -- Title, Image
 local TeleportSection = TeleportTab:CreateSection("Teleport")
