@@ -403,7 +403,13 @@ local Button = TeleportTab:CreateButton({
    end,
 })
 
-
+local Button = TeleportTab:CreateButton({
+   Name = "Ride",
+   Callback = function()
+   local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+   rootPart.CFrame = game:GetService("Workspace").Launch.Ride.Ride.Ride.CFrame
+   end,
+})
 
 
 local MiscTab = Window:CreateTab("Misc", 4483362458) -- Title, Image
