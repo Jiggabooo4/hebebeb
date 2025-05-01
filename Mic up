@@ -254,7 +254,43 @@ end)
 
    end,
 })
-    
+
+local Button = MainTab:CreateButton({
+   Name = "Fling",
+   Callback = function()
+  local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local localPlayer = Players.LocalPlayer
+
+-- Wait for character to load
+local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Function to fling another player
+local function flingTarget(targetCharacter)
+    local targetHRP = targetCharacter:FindFirstChild("HumanoidRootPart")
+    if targetHRP then
+        -- Massive velocity to fling them
+        targetHRP.Velocity = Vector3.new(500, 500, 500)
+    end
+end
+
+-- Check for touching other players
+RunService.Stepped:Connect(function()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer and player.Character then
+            local theirHRP = player.Character:FindFirstChild("HumanoidRootPart")
+            if theirHRP and (theirHRP.Position - rootPart.Position).Magnitude < 5 then
+                flingTarget(player.Character)
+            end
+        end
+    end
+end)
+
+   end,
+})
+
 local TeleportTab = Window:CreateTab("Teleport", 4483362458) -- Title, Image
 local TeleportSection = TeleportTab:CreateSection("Teleport")
 
