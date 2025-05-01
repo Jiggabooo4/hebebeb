@@ -306,6 +306,106 @@ local Button = TeleportTab:CreateButton({
    end,
 })
 
+local Button = TeleportTab:CreateButton({
+    Name = "Tent",
+    Callback = function()
+        local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+        local rugPart = nil
+
+        for _, model in ipairs(game:GetService("Workspace"):GetChildren()) do
+            local rug = model:FindFirstChild("Gray Rug")
+            if rug and rug:FindFirstChild("Part") then
+                rugPart = rug.Part
+                break
+            end
+        end
+
+        if rugPart then
+            rootPart.CFrame = rugPart.CFrame
+        else
+            warn("Could not find 'Gray Rug' with a child Part in any Workspace model.")
+        end
+    end,
+})
+
+local Button = TeleportTab:CreateButton({
+    Name = "Table",
+    Callback = function()
+        local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+        local tablePart = nil
+
+        -- Look through everything in Workspace to find the part directly
+        for _, obj in ipairs(game:GetService("Workspace"):GetDescendants()) do
+            if obj.Name == "Rectangular Coffee Table" and obj:IsA("BasePart") then
+                tablePart = obj
+                break
+            end
+        end
+
+        if tablePart then
+            rootPart.CFrame = tablePart.CFrame
+        else
+            warn("Could not find a part named 'Rectangular Coffee Table' in Workspace.")
+        end
+    end,
+})
+
+local Button = TeleportTab:CreateButton({
+    Name = "Floating Space",
+    Callback = function()
+        local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+        -- Base CFrame
+        local baseCFrame = CFrame.new(
+            170.998001, 58, -113.500031,
+            -1, 0, 0,
+             0, 1, 0,
+             0, 0, -1
+        )
+
+        -- Apply +5 studs in the Y direction
+        local offsetCFrame = baseCFrame + Vector3.new(0, 5, 0)
+
+        rootPart.CFrame = offsetCFrame
+    end,
+})
+
+local Button = TeleportTab:CreateButton({
+   Name = "Stage",
+   Callback = function()
+       local rootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+       
+       -- Loop through all models in the Workspace
+       local rapStage = nil
+       for _, model in pairs(game:GetService("Workspace"):GetChildren()) do
+           if model.Name == "Model" then
+               -- Check if this model contains the "Rap stage" part
+               local rapStageModel = model:FindFirstChild("Rap stage")
+               if rapStageModel then
+                   rapStage = rapStageModel
+                   break
+               end
+           end
+       end
+
+       if rapStage then
+           -- Now look for the "Microphone" part inside the found "Rap stage"
+           local microphone = rapStage:FindFirstChild("Microphone")
+           if microphone then
+               -- Teleport the player to the "Microphone" part's CFrame
+               rootPart.CFrame = microphone.Speaker.CFrame
+           else
+               warn("Microphone part not found in Rap stage model")
+           end
+       else
+           warn("Rap stage model not found in any 'Model' in Workspace")
+       end
+   end,
+})
+
+
+
+
 local MiscTab = Window:CreateTab("Misc", 4483362458) -- Title, Image
 local MiscSection = MiscTab:CreateSection("Misc Tab")
 
