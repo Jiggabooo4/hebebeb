@@ -255,6 +255,13 @@ end)
    end,
 })
 
+local Button = MainTab:CreateButton({
+   Name = "Anti-Lag",
+   Callback = function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/Jiggabooo4/hebebeb/refs/heads/main/Anti-Lag"))()
+   end,
+})
+
 local TeleportTab = Window:CreateTab("Teleport", 4483362458) -- Title, Image
 local TeleportSection = TeleportTab:CreateSection("Teleport")
 
