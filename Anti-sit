@@ -1,0 +1,42 @@
+-- Anti-Sit + Seat Remover Script for Mic Up
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- 🪑 Remove all Seat and VehicleSeat instances
+local function removeSeats()
+    local count = 0
+    for _, obj in ipairs(game:GetDescendants()) do
+        if obj:IsA("Seat") or obj:IsA("VehicleSeat") then
+            obj:Destroy()
+            count += 1
+        end
+    end
+    print("[Anti-Sit] Removed " .. count .. " seats from the game.")
+end
+
+-- 🚫 Prevent character from sitting
+local function preventSitting()
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid:GetPropertyChangedSignal("Sit"):Connect(function()
+            if humanoid.Sit then
+                humanoid.Sit = false
+                print("[Anti-Sit] Sit attempt blocked.")
+            end
+        end)
+    end
+end
+
+-- 🌟 Set up initial anti-sit behavior
+removeSeats()
+preventSitting()
+
+-- 🔄 Reapply when the character respawns
+LocalPlayer.CharacterAdded:Connect(function()
+    wait(1) -- Give time for character to load
+    removeSeats()
+    preventSitting()
+end)
+
+print("[Anti-Sit] Script fully active.")
