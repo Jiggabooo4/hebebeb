@@ -1,0 +1,39 @@
+-- Anti-Lag Script
+local function removeUnnecessaryItems()
+    for _, obj in pairs(game:GetDescendants()) do
+        if obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Smoke") or obj:IsA("Fire") then
+            obj:Destroy()
+        elseif obj:IsA("Decal") then
+            obj.Transparency = 1
+        elseif obj:IsA("Explosion") then
+            obj:Destroy()
+        end
+    end
+end
+
+local function simplifyTerrain()
+    -- Check if the Terrain object exists
+    local terrain = workspace:FindFirstChild("Terrain")
+    if terrain then
+        -- Try to disable or modify certain water effects that might cause lag
+        pcall(function()
+            terrain.WaterTransparency = 1
+            terrain.WaterWaveSize = 0
+            terrain.WaterSpeed = 0
+            terrain.WaterReflectance = 0
+        end)
+    end
+end
+
+local function lowerGraphicsSettings()
+    -- Set rendering quality to the lowest to reduce load
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+end
+
+-- Execute all functions
+removeUnnecessaryItems()
+simplifyTerrain()
+lowerGraphicsSettings()
+
+-- Console confirmation
+print("[Anti-Lag Script] Finished optimizing performance.")
